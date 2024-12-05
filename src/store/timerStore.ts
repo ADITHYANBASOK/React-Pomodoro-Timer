@@ -9,7 +9,7 @@ interface TimerStore {
   shortBreakDuration: number;
   longBreakDuration: number;
   completedSessions: number;
-  intervalId: number | null;
+  intervalId: number | undefined; 
   startTimer: () => void;
   pauseTimer: () => void;
   resetTimer: () => void;
@@ -25,20 +25,20 @@ export const useTimerStore = create<TimerStore>((set, get) => ({
   shortBreakDuration: 5,
   longBreakDuration: 15,
   completedSessions: 0,
-  intervalId: null,
+  intervalId: undefined, 
 
   startTimer: () => {
-    if (get().intervalId) {
+    if (get().intervalId !== undefined) {
       clearInterval(get().intervalId);
     }
 
-    const intervalId = setInterval(() => {
+    const intervalId = window.setInterval(() => {
       const state = get();
       if (state.timeLeft <= 0) {
         let nextPhase: 'work' | 'shortBreak' | 'longBreak';
         let nextTime: number;
         let notificationMessage: string;
-        
+
         if (state.currentPhase === 'work') {
           const sessions = state.completedSessions + 1;
           if (sessions % 4 === 0) {
@@ -56,12 +56,12 @@ export const useTimerStore = create<TimerStore>((set, get) => ({
           nextTime = state.workDuration * 60;
           notificationMessage = 'Time to focus!';
         }
-        
+
         notificationService.notify('Pomodoro Timer', {
           body: notificationMessage,
           icon: '/timer.svg',
         });
-        
+
         set({
           currentPhase: nextPhase,
           timeLeft: nextTime,
@@ -76,15 +76,15 @@ export const useTimerStore = create<TimerStore>((set, get) => ({
 
   pauseTimer: () => {
     const { intervalId } = get();
-    if (intervalId) {
+    if (intervalId !== undefined) {
       clearInterval(intervalId);
     }
-    set({ isRunning: false, intervalId: null });
+    set({ isRunning: false, intervalId: undefined });
   },
 
   resetTimer: () => {
     const { intervalId } = get();
-    if (intervalId) {
+    if (intervalId !== undefined) {
       clearInterval(intervalId);
     }
     set({
@@ -92,13 +92,13 @@ export const useTimerStore = create<TimerStore>((set, get) => ({
       isRunning: false,
       currentPhase: 'work',
       completedSessions: 0,
-      intervalId: null,
+      intervalId: undefined,
     });
   },
 
   updateSettings: (settings) => {
     const { intervalId } = get();
-    if (intervalId) {
+    if (intervalId !== undefined) {
       clearInterval(intervalId);
     }
     set({
@@ -109,7 +109,7 @@ export const useTimerStore = create<TimerStore>((set, get) => ({
       isRunning: false,
       currentPhase: 'work',
       completedSessions: 0,
-      intervalId: null,
+      intervalId: undefined,
     });
   },
 
