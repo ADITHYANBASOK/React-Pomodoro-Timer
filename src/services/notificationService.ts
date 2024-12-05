@@ -5,7 +5,7 @@ class NotificationService {
 
   private constructor() {
     this.requestPermission();
-    this.audio = new Audio('/notification.mp3');
+    this.audio = new Audio('/noti.wav');
     this.audio.volume = 0.5;
   }
 
@@ -35,6 +35,7 @@ class NotificationService {
       new Notification(title, options);
     }
   }
+
 }
 
 export const notificationService = NotificationService.getInstance();
